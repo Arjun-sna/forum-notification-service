@@ -1,0 +1,16 @@
+spring:
+  kafka:
+    properties:
+      security:
+        protocol: SASL_SSL
+      sasl:
+        mechanism: PLAIN
+        jaas:
+          config: org.apache.kafka.common.security.plain.PlainLoginModule required username='${KAFKA_AUTH_USERNAME}' password='${KAFKA_AUTH_PASSWORD}';
+
+    consumer:
+      bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVER}
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+
+    topics:
+      email_notification: forum_app_sample
