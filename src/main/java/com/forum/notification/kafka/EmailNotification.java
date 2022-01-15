@@ -1,4 +1,4 @@
-package com.forum.notification.kafka.emailNotification;
+package com.forum.notification.kafka;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -6,10 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class EmailNotification {
-    private String channel;
-    private String type;
-    private String token;
-    private int userId;
-    private String username;
-    private String email;
+    private EmailNotificationType type;
+    private String payload;
 }
