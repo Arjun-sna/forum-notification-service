@@ -1,4 +1,4 @@
-package com.forum.notification.kafka;
+package com.forum.notification.kafka.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
