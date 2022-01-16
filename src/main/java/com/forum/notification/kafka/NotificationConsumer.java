@@ -1,38 +1,24 @@
 package com.forum.notification.kafka;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.forum.notification.kafka.dto.EmailNotification;
-import com.forum.notification.kafka.dto.PwResetNotification;
+import com.forum.notification.dto.PwResetNotification;
+import com.forum.notification.mailer.EmailService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
 @Component
 @Slf4j
+@RequiredArgsConstructor
 public class NotificationConsumer {
-    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final EmailService eMailService;
 
-    @KafkaListener(id = "email_notification_listener", topics = "forum_app_sample")
-    public void listenOnEMailNotificationTopic(EmailNotification emailNotification) {
-         log.info("Received mail " + emailNotification.getPayload());
-         switch (emailNotification.getType()) {
-             case PW_RESET:
-                 this.handlePwResetNotification(emailNotification.getPayload());
-                 break;
-             case ACCOUNT_ACTIVATION:
-                 log.info("Account activation mail");
-             default:
-                 log.info("Unknown operation");
-         }
-    }
-
-    private void handlePwResetNotification(String payload) {
-        try {
-            PwResetNotification pwResetNotification = objectMapper.readValue(payload, PwResetNotification.class);
-            log.info("Received not " + pwResetNotification.getEmail());
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
+    @KafkaListener(
+            id = "pw_reset_notification_listener",
+            topics = "${spring.kafka.topics.pw_reset_notification}")
+    public void listenOnEMailNotificationTopic(PwResetNotification pwResetNotification) {
+        log.info("Received pw reset notification");
+        eMailService.send(
+                pwResetNotification.getEmail(), "Password Reset", pwResetNotification.getToken());
     }
 }

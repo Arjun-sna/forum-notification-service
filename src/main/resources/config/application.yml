@@ -13,4 +13,9 @@ spring:
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
 
     topics:
-      email_notification: forum_app_sample
+      pw_reset_notification: pw_reset_notification
+
+  sendgrid:
+    api-key: ${MAIL_SMTP_PASSWORD}
+    sender-email: ${MAIL_SMTP_SENDER_EMAIL}
+    sender-name: ${MAIL_SMTP_SENDER_NAME}
