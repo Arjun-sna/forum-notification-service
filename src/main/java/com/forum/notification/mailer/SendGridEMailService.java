@@ -1,26 +1,44 @@
 package com.forum.notification.mailer;
 
+import com.sendgrid.*;
+import com.sendgrid.helpers.mail.Mail;
+import com.sendgrid.helpers.mail.objects.Content;
+import com.sendgrid.helpers.mail.objects.Email;
 import lombok.RequiredArgsConstructor;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class EMailServiceImpl {
-    private final JavaMailSender javaMailSender;
+@Slf4j
+public class SendGridEMailService implements EmailService{
+    @Value("${spring.sendgrid.sender-email}")
+    public String senderEmail;
+    @Value("${spring.sendgrid.sender-name}")
+    public String senderName;
 
-    public void sendSimpleMessage(String to, String subject, String text) {
+    private final SendGridAPI sg;
+
+    @Override
+    public void send(String toEMail, String subject, String mailContent) {
+        Email from = new Email(senderEmail, senderName);
+        Email to = new Email(toEMail);
+        Content content = new Content("text/plain", mailContent);
+        Mail mail = new Mail(from, subject, to, content);
+        Request request = new Request();
+
         try {
-            SimpleMailMessage message = new SimpleMailMessage();
-            message.setFrom("noreply@forum.com");
-            message.setTo(to);
-            message.setSubject(subject);
-            message.setText(text);
-            javaMailSender.send(message);
-        } catch (Exception e) {
-            e.printStackTrace();
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+            log.info(String.valueOf(response.getStatusCode()));
+            log.info(response.getBody());
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
-
     }
 }
