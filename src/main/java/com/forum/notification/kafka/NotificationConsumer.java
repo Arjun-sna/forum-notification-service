@@ -1,6 +1,5 @@
 package com.forum.notification.kafka;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.forum.notification.dto.PwResetNotification;
 import com.forum.notification.mailer.EmailService;
 import lombok.RequiredArgsConstructor;

@@ -1,6 +1,9 @@
 package com.forum.notification.mailer;
 
-import com.sendgrid.*;
+import com.sendgrid.Method;
+import com.sendgrid.Request;
+import com.sendgrid.Response;
+import com.sendgrid.SendGridAPI;
 import com.sendgrid.helpers.mail.Mail;
 import com.sendgrid.helpers.mail.objects.Content;
 import com.sendgrid.helpers.mail.objects.Email;
@@ -14,13 +17,12 @@ import java.io.IOException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class SendGridEMailService implements EmailService{
+public class SendGridEMailService implements EmailService {
+    private final SendGridAPI sg;
     @Value("${spring.sendgrid.sender-email}")
     public String senderEmail;
     @Value("${spring.sendgrid.sender-name}")
     public String senderName;
-
-    private final SendGridAPI sg;
 
     @Override
     public void send(String toEMail, String subject, String mailContent) {
